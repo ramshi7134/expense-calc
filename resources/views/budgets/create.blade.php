@@ -1,39 +1,81 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="max-w-md mx-auto p-4">
-        <h1 class="text-2xl font-bold mb-4">Set Monthly Budget</h1>
-        <form action="{{ route('budgets.store') }}" method="POST" class="card bg-base-100 shadow-xl p-6">
-            @csrf
-            <div class="mb-4">
-                <label for="category_id" class="block font-semibold mb-1">Category</label>
-                <select name="category_id" id="category_id" class="input input-bordered w-full" required>
-                    @foreach ($categories as $category)
-                        <option value="{{ $category->id }}">{{ $category->name }}</option>
-                    @endforeach
-                </select>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card shadow">
+                    <div class="card-header">
+                        <h5 class="m-0 font-weight-bold text-primary">Add New Budget</h5>
+                    </div>
+                    <div class="card-body">
+                        <form action="{{ route('budgets.store') }}" method="POST">
+                            @csrf
+
+                            <div class="mb-3">
+                                <label for="category_id" class="form-label">Category</label>
+                                <select class="form-select @error('category_id') is-invalid @enderror" id="category_id"
+                                    name="category_id" required>
+                                    <option value="">Select a Category</option>
+                                    @foreach ($categories as $category)
+                                        <option value="{{ $category->id }}"
+                                            {{ old('category_id') == $category->id ? 'selected' : '' }}>
+                                            {{ $category->name }}</option>
+                                    @endforeach
+                                </select>
+                                @error('category_id')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="limit" class="form-label">Limit</label>
+                                <input type="number" class="form-control @error('limit') is-invalid @enderror"
+                                    id="limit" name="limit" value="{{ old('limit') }}" required step="0.01">
+                                @error('limit')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="month" class="form-label">Month</label>
+                                    <select class="form-select @error('month') is-invalid @enderror" id="month"
+                                        name="month" required>
+                                        @for ($m = 1; $m <= 12; $m++)
+                                            <option value="{{ $m }}"
+                                                {{ old('month', date('m')) == $m ? 'selected' : '' }}>
+                                                {{ date('F', mktime(0, 0, 0, $m, 1)) }}</option>
+                                        @endfor
+                                    </select>
+                                    @error('month')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="year" class="form-label">Year</label>
+                                    <select class="form-select @error('year') is-invalid @enderror" id="year"
+                                        name="year" required>
+                                        @for ($y = date('Y'); $y <= date('Y') + 5; $y++)
+                                            <option value="{{ $y }}"
+                                                {{ old('year', date('Y')) == $y ? 'selected' : '' }}>
+                                                {{ $y }}</option>
+                                        @endfor
+                                    </select>
+                                    @error('year')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
+
+                            <div class="d-flex justify-content-end">
+                                <a href="{{ route('budgets.index') }}" class="btn btn-secondary me-2">Cancel</a>
+                                <button type="submit" class="btn btn-primary">Save Budget</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
             </div>
-            <div class="mb-4">
-                <label for="limit" class="block font-semibold mb-1">Monthly Limit (AED)</label>
-                <input type="number" step="0.01" name="limit" id="limit" class="input input-bordered w-full"
-                    required>
-            </div>
-            <div class="mb-4">
-                <label for="month" class="block font-semibold mb-1">Month</label>
-                <select name="month" id="month" class="input input-bordered w-full" required>
-                    @for ($m = 1; $m <= 12; $m++)
-                        <option value="{{ $m }}" @if ($m == now()->month) selected @endif>
-                            {{ date('F', mktime(0, 0, 0, $m, 1)) }}</option>
-                    @endfor
-                </select>
-            </div>
-            <div class="mb-4">
-                <label for="year" class="block font-semibold mb-1">Year</label>
-                <input type="number" name="year" id="year" class="input input-bordered w-full"
-                    value="{{ now()->year }}" required>
-            </div>
-            <button type="submit" class="btn btn-primary">Set Budget</button>
-            <a href="{{ route('budgets.index') }}" class="ml-4 btn btn-ghost">Cancel</a>
-        </form>
+        </div>
     </div>
 @endsection

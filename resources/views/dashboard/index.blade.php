@@ -101,43 +101,125 @@
             @endforelse
         </div>
 
-        <!-- Chart -->
-        @if (collect($categorySummary)->where('spent', '>', 0)->isNotEmpty())
-            <div class="card shadow mt-4">
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Category-wise Expenses</h6>
-                </div>
-                <div class="card-body">
-                    <div id="expenseChart" style="height: 350px;"></div>
-                </div>
+        <!-- Charts Row -->
+        <div class="row">
+            <!-- Pie Chart -->
+            <div class="col-lg-6 mb-4">
+                @if (collect($categorySummary)->where('spent', '>', 0)->isNotEmpty())
+                    <div class="card shadow h-100">
+                        <div class="card-header py-3">
+                            <h6 class="m-0 font-weight-bold text-primary">Category-wise Expenses</h6>
+                        </div>
+                        <div class="card-body">
+                            <div id="expenseChart" style="height: 350px;"></div>
+                        </div>
+                    </div>
+                @endif
             </div>
-        @endif
+
+            <!-- Bar Chart -->
+            <div class="col-lg-6 mb-4">
+                @if (collect($categorySummary)->where('limit', '>', 0)->isNotEmpty())
+                    <div class="card shadow h-100">
+                        <div class="card-header py-3">
+                            <h6 class="m-0 font-weight-bold text-primary">Budget vs. Spent</h6>
+                        </div>
+                        <div class="card-body">
+                            <div id="budgetVsSpentChart" style="height: 350px;"></div>
+                        </div>
+                    </div>
+                @endif
+            </div>
+        </div>
     </div>
 
     @push('scripts')
         <script>
             document.addEventListener('DOMContentLoaded', function() {
-                var options = {
-                    series: @json(collect($categorySummary)->pluck('spent')),
-                    chart: {
-                        type: 'donut',
-                        height: 350
-                    },
-                    labels: @json(collect($categorySummary)->pluck('name')),
-                    colors: ['#4e73df', '#1cc88a', '#36b9cc', '#f6c23e', '#e74a3b', '#858796'],
-                    dataLabels: {
-                        enabled: true,
-                        formatter: function(val, opts) {
-                            return opts.w.globals.labels[opts.seriesIndex]
-                        }
-                    },
-                    legend: {
-                        position: 'bottom'
-                    },
-                };
+                // Donut Chart for Category-wise Expenses
+                if (document.querySelector("#expenseChart")) {
+                    var options = {
+                        series: @json(collect($categorySummary)->where('spent', '>', 0)->pluck('spent')),
+                        chart: {
+                            type: 'donut',
+                            height: 350
+                        },
+                        labels: @json(collect($categorySummary)->where('spent', '>', 0)->pluck('name')),
+                        colors: ['#4e73df', '#1cc88a', '#36b9cc', '#f6c23e', '#e74a3b', '#858796'],
+                        dataLabels: {
+                            enabled: true,
+                            formatter: function(val, opts) {
+                                return opts.w.globals.labels[opts.seriesIndex]
+                            }
+                        },
+                        legend: {
+                            position: 'bottom'
+                        },
+                    };
 
-                var chart = new ApexCharts(document.querySelector("#expenseChart"), options);
-                chart.render();
+                    var chart = new ApexCharts(document.querySelector("#expenseChart"), options);
+                    chart.render();
+                }
+
+                // Bar Chart for Budget vs. Spent
+                if (document.querySelector("#budgetVsSpentChart")) {
+                    const budgetData = @json(collect($categorySummary)->where('limit', '>', 0)->all());
+
+                    var budgetVsSpentOptions = {
+                        series: [{
+                            name: 'Budget',
+                            data: budgetData.map(item => item.limit)
+                        }, {
+                            name: 'Spent',
+                            data: budgetData.map(item => item.spent)
+                        }],
+                        chart: {
+                            type: 'bar',
+                            height: 350
+                        },
+                        plotOptions: {
+                            bar: {
+                                horizontal: false,
+                                columnWidth: '55%',
+                                endingShape: 'rounded'
+                            },
+                        },
+                        dataLabels: {
+                            enabled: false
+                        },
+                        stroke: {
+                            show: true,
+                            width: 2,
+                            colors: ['transparent']
+                        },
+                        xaxis: {
+                            categories: budgetData.map(item => item.name),
+                        },
+                        yaxis: {
+                            title: {
+                                text: 'AED'
+                            }
+                        },
+                        fill: {
+                            opacity: 1
+                        },
+                        tooltip: {
+                            y: {
+                                formatter: function(val) {
+                                    return "AED " + val
+                                }
+                            }
+                        },
+                        legend: {
+                            position: 'top',
+                            horizontalAlign: 'left'
+                        }
+                    };
+
+                    var budgetChart = new ApexCharts(document.querySelector("#budgetVsSpentChart"),
+                        budgetVsSpentOptions);
+                    budgetChart.render();
+                }
             });
         </script>
     @endpush

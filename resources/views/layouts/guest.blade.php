@@ -8,28 +8,51 @@
 
     <title>{{ config('app.name', 'Laravel') }}</title>
 
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
-
     <!-- Scripts -->
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @vite(['resources/scss/app.scss', 'resources/js/app.js'])
+
+    <style>
+        body {
+            background-color: #f4f7f6;
+        }
+
+        .auth-card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px 0 rgba(0, 0, 0, 0.1);
+        }
+
+        .auth-card .card-header {
+            border-top-left-radius: 15px;
+            border-top-right-radius: 15px;
+            background-color: var(--bs-primary);
+            color: white;
+            padding: 1.5rem;
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+    </style>
 </head>
 
-<body
-    class="font-sans antialiased bg-gradient-to-br from-blue-50 via-white to-blue-100 dark:from-gray-900 dark:via-gray-950 dark:to-gray-900 text-gray-900 dark:text-gray-100 min-h-screen transition-colors">
-    <div
-        class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 backdrop-blur-md bg-white/70 dark:bg-gray-900/80 shadow-xl rounded-lg">
-        <div>
-            <a href="/">
-                <x-application-logo class="w-20 h-20 fill-current text-gray-500" />
-            </a>
-        </div>
-
-        <div
-            class="w-full sm:max-w-md mt-6 px-6 py-4 bg-white dark:bg-gray-800 shadow-md overflow-hidden sm:rounded-lg">
-            {{ $slot }}
-        </div>
+<body class="d-flex align-items-center justify-content-center min-vh-100">
+    <div id="app">
+        <main class="py-4">
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-md-6">
+                        <div class="card auth-card">
+                            <div class="card-header">
+                                {{ $header ?? config('app.name', 'Laravel') }}
+                            </div>
+                            <div class="card-body p-4">
+                                {{ $slot }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
     </div>
 </body>
 
