@@ -1,147 +1,144 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="min-h-screen bg-gray-100">
-
-        <div class="max-w-7xl mx-auto px-6 py-10">
-
-            <!-- ================= HEADER ================= -->
-            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-6 mb-12">
-
-                <h1 class="text-3xl font-extrabold text-gray-900">
-                    Monthly Expense Dashboard
-                </h1>
-
-                <div class="flex items-center gap-4">
-                    <!-- Month Selector -->
-                    <select onchange="const [m, y] = this.value.split('-'); window.location = `?month=${m}&year=${y}`"
-                        class="px-5 py-3 rounded-xl border border-gray-300 bg-white text-gray-800 shadow-sm">
-                        @for ($y = now()->year; $y >= 2020; $y--)
-                            @for ($m = 12; $m >= 1; $m--)
-                                @php
-                                    $selected = $m == $month && $y == $year ? 'selected' : '';
-                                    $monthName = date('F', mktime(0, 0, 0, $m, 1));
-                                @endphp
-                                <option value="{{ $m }}-{{ $y }}" {{ $selected }}>
-                                    {{ $monthName }} {{ $y }}
-                                </option>
-                            @endfor
+    <div class="container">
+        <!-- Page Header -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="h3 mb-0 text-gray-800">Monthly Expense Dashboard</h1>
+            <!-- Month Selector -->
+            <div class="col-md-3">
+                <select onchange="const [m, y] = this.value.split('-'); window.location = `?month=${m}&year=${y}`"
+                    class="form-select">
+                    @for ($y = now()->year; $y >= 2020; $y--)
+                        @for ($m = 12; $m >= 1; $m--)
+                            @php
+                                $selected = $m == $month && $y == $year ? 'selected' : '';
+                                $monthName = date('F', mktime(0, 0, 0, $m, 1));
+                            @endphp
+                            <option value="{{ $m }}-{{ $y }}" {{ $selected }}>
+                                {{ $monthName }} {{ $y }}
+                            </option>
                         @endfor
-                    </select>
-                </div>
+                    @endfor
+                </select>
             </div>
+        </div>
 
-            <!-- ================= SUMMARY CARDS ================= -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
-
-                <!-- Total Expenses -->
-                <div class="bg-white rounded-2xl p-8 shadow-lg">
-                    <p class="text-sm text-gray-500 mb-2">
-                        Total Expenses
-                    </p>
-                    <p class="text-4xl font-extrabold text-red-500">
-                        AED {{ number_format($totalExpenses, 2) }}
-                    </p>
-                </div>
-
-                <!-- Remaining Budget -->
-                <div class="bg-white rounded-2xl p-8 shadow-lg">
-                    <p class="text-sm text-gray-500 mb-2">
-                        Remaining Budget
-                    </p>
-                    <p class="text-4xl font-extrabold {{ $remainingBudget >= 0 ? 'text-emerald-500' : 'text-red-500' }}">
-                        AED {{ number_format($remainingBudget, 2) }}
-                    </p>
-                </div>
-            </div>
-
-            <!-- ================= CATEGORY SUMMARY ================= -->
-            <h2 class="text-2xl font-bold text-gray-900 mb-6">
-                Category Summary
-            </h2>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-
-                @forelse ($categorySummary as $category)
-                    <div class="bg-white rounded-2xl p-6 shadow-md hover:shadow-xl transition">
-
-                        <div class="flex justify-between items-center mb-4">
-                            <h3 class="text-lg font-bold text-gray-900">
-                                {{ $category['name'] }}
-                            </h3>
-                            <span class="text-sm text-gray-500">
-                                {{ $category['percentage'] }}%
-                            </span>
-                        </div>
-
-                        <p class="text-sm text-gray-600 mb-4">
-                            AED {{ number_format($category['spent'], 2) }}
-                            <span class="text-gray-400">
-                                / AED {{ number_format($category['limit'], 2) }}
-                            </span>
-                        </p>
-
-                        <!-- Progress -->
-                        <div class="w-full bg-gray-200 rounded-full h-3 overflow-hidden mb-4">
-                            <div class="h-3 rounded-full"
-                                style="width: {{ min($category['percentage'], 100) }}%;
-                                   background: linear-gradient(90deg,#3b82f6,#2563eb);">
+        <!-- Summary Cards -->
+        <div class="row">
+            <div class="col-md-6 mb-4">
+                <div class="card border-left-danger shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
+                                    Total Expenses</div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                    AED {{ number_format($totalExpenses, 2) }}</div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
                             </div>
                         </div>
-
-                        <p class="text-sm text-gray-500">
-                            Remaining:
-                            <span class="font-semibold text-gray-900">
-                                AED {{ number_format($category['remaining'], 2) }}
-                            </span>
-                        </p>
                     </div>
-                @empty
-                    <div class="col-span-full bg-white rounded-2xl p-10 shadow text-center">
-                        <p class="text-gray-500 mb-4">
-                            No budget set for any category.
-                        </p>
-                        <a href="{{ route('categories.index') }}"
-                            class="inline-block px-6 py-3 rounded-xl bg-blue-600 text-white font-semibold hover:bg-blue-700">
-                            Set Budget
-                        </a>
+                </div>
+            </div>
+            <div class="col-md-6 mb-4">
+                <div class="card border-left-success shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                    Remaining Budget</div>
+                                <div
+                                    class="h5 mb-0 font-weight-bold {{ $remainingBudget >= 0 ? 'text-success' : 'text-danger' }}">
+                                    AED {{ number_format($remainingBudget, 2) }}</div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-wallet fa-2x text-gray-300"></i>
+                            </div>
+                        </div>
                     </div>
-                @endforelse
-
+                </div>
             </div>
-
-            <!-- ================= CHART ================= -->
-            <div class="mt-20 bg-white rounded-2xl p-8 shadow-lg">
-                <h2 class="text-xl font-bold text-gray-900 mb-6">
-                    Category-wise Expenses
-                </h2>
-
-                <div id="expenseChart"></div>
-            </div>
-
         </div>
+
+        <!-- Category Summary -->
+        <h2 class="h4 mb-3 text-gray-800">Category Summary</h2>
+        <div class="row">
+            @forelse ($categorySummary as $category)
+                @if ($category['limit'] > 0 || $category['spent'] > 0)
+                    <div class="col-lg-4 col-md-6 mb-4">
+                        <div class="card shadow">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ $category['name'] }}</h5>
+                                <p class="card-text">
+                                    Spent: AED {{ number_format($category['spent'], 2) }} /
+                                    <span class="text-muted">AED {{ number_format($category['limit'], 2) }}</span>
+                                </p>
+                                <div class="progress mb-2">
+                                    <div class="progress-bar" role="progressbar"
+                                        style="width: {{ $category['percentage'] }}%;"
+                                        aria-valuenow="{{ $category['percentage'] }}" aria-valuemin="0"
+                                        aria-valuemax="100">
+                                        {{ round($category['percentage']) }}%
+                                    </div>
+                                </div>
+                                <p class="card-text text-muted">
+                                    Remaining: AED {{ number_format($category['remaining'], 2) }}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                @endif
+            @empty
+                <div class="col-12">
+                    <div class="card shadow text-center p-4">
+                        <p>You haven't set a budget for any category this month.</p>
+                        <a href="{{ route('budgets.create') }}" class="btn btn-primary">Set Monthly Budget</a>
+                    </div>
+                </div>
+            @endforelse
+        </div>
+
+        <!-- Chart -->
+        @if (collect($categorySummary)->where('spent', '>', 0)->isNotEmpty())
+            <div class="card shadow mt-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Category-wise Expenses</h6>
+                </div>
+                <div class="card-body">
+                    <div id="expenseChart" style="height: 350px;"></div>
+                </div>
+            </div>
+        @endif
     </div>
 
-    <!-- ================= APEX CHART ================= -->
-    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    @push('scripts')
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                var options = {
+                    series: @json(collect($categorySummary)->pluck('spent')),
+                    chart: {
+                        type: 'donut',
+                        height: 350
+                    },
+                    labels: @json(collect($categorySummary)->pluck('name')),
+                    colors: ['#4e73df', '#1cc88a', '#36b9cc', '#f6c23e', '#e74a3b', '#858796'],
+                    dataLabels: {
+                        enabled: true,
+                        formatter: function(val, opts) {
+                            return opts.w.globals.labels[opts.seriesIndex]
+                        }
+                    },
+                    legend: {
+                        position: 'bottom'
+                    },
+                };
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            new ApexCharts(document.querySelector("#expenseChart"), {
-                chart: {
-                    type: 'donut',
-                    height: 360
-                },
-                series: @json(collect($categorySummary)->pluck('spent')),
-                labels: @json(collect($categorySummary)->pluck('name')),
-                colors: ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6'],
-                legend: {
-                    position: 'bottom',
-                    labels: {
-                        colors: '#9ca3af'
-                    }
-                }
-            }).render();
-        });
-    </script>
+                var chart = new ApexCharts(document.querySelector("#expenseChart"), options);
+                chart.render();
+            });
+        </script>
+    @endpush
 @endsection

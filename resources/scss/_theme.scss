@@ -1,0 +1,28 @@
+// 1. Futuristic & Elegant Color Palette
+$primary: #0D47A1; // Deep, intelligent blue
+$secondary: #616161; // Sleek, modern gray
+$success: #00BFA5; // Vibrant, techy teal
+$danger: #D32F2F; // Clear, warning red
+$info: #0288D1; // Bright, informative blue
+$light: #F5F5F5; // Clean, off-white
+$dark: #212121; // Deep, rich black
+
+// 2. Typography
+$font-family-sans-serif: 'Figtree', sans-serif;
+$headings-font-weight: 700;
+$h1-font-size: 2.25rem;
+$h2-font-size: 1.75rem;
+$h3-font-size: 1.5rem;
+
+// 3. Border Radius
+$border-radius: .5rem; // Slightly larger for a softer, modern look
+$border-radius-lg: .75rem;
+$border-radius-sm: .25rem;
+
+// 4. Box Shadow
+$box-shadow: 0 0.5rem 1rem rgba($dark, 0.05);
+$box-shadow-lg: 0 1rem 3rem rgba($dark, 0.1);
+
+// 5. Body
+$body-bg: $light;
+$body-color: #424242;
