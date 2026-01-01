@@ -35,8 +35,8 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
 
                 <!-- Total Expenses -->
-                <div class="bg-white dark:bg-gray-900 rounded-2xl p-8 shadow-lg">
-                    <p class="text-sm text-gray-500 dark:text-gray-400 mb-2">
+                <div class="bg-white rounded-2xl p-8 shadow-lg">
+                    <p class="text-sm text-gray-500 mb-2">
                         Total Expenses
                     </p>
                     <p class="text-4xl font-extrabold text-red-500">
@@ -45,8 +45,8 @@
                 </div>
 
                 <!-- Remaining Budget -->
-                <div class="bg-white dark:bg-gray-900 rounded-2xl p-8 shadow-lg">
-                    <p class="text-sm text-gray-500 dark:text-gray-400 mb-2">
+                <div class="bg-white rounded-2xl p-8 shadow-lg">
+                    <p class="text-sm text-gray-500 mb-2">
                         Remaining Budget
                     </p>
                     <p class="text-4xl font-extrabold {{ $remainingBudget >= 0 ? 'text-emerald-500' : 'text-red-500' }}">
@@ -56,17 +56,17 @@
             </div>
 
             <!-- ================= CATEGORY SUMMARY ================= -->
-            <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-6">
+            <h2 class="text-2xl font-bold text-gray-900 mb-6">
                 Category Summary
             </h2>
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
 
                 @forelse ($categorySummary as $category)
-                    <div class="bg-white dark:bg-gray-900 rounded-2xl p-6 shadow-md hover:shadow-xl transition">
+                    <div class="bg-white rounded-2xl p-6 shadow-md hover:shadow-xl transition">
 
                         <div class="flex justify-between items-center mb-4">
-                            <h3 class="text-lg font-bold text-gray-900 dark:text-white">
+                            <h3 class="text-lg font-bold text-gray-900">
                                 {{ $category['name'] }}
                             </h3>
                             <span class="text-sm text-gray-500">
@@ -74,7 +74,7 @@
                             </span>
                         </div>
 
-                        <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">
+                        <p class="text-sm text-gray-600 mb-4">
                             AED {{ number_format($category['spent'], 2) }}
                             <span class="text-gray-400">
                                 / AED {{ number_format($category['limit'], 2) }}
@@ -82,22 +82,22 @@
                         </p>
 
                         <!-- Progress -->
-                        <div class="w-full bg-gray-200 dark:bg-gray-800 rounded-full h-3 overflow-hidden mb-4">
+                        <div class="w-full bg-gray-200 rounded-full h-3 overflow-hidden mb-4">
                             <div class="h-3 rounded-full"
                                 style="width: {{ min($category['percentage'], 100) }}%;
                                    background: linear-gradient(90deg,#3b82f6,#2563eb);">
                             </div>
                         </div>
 
-                        <p class="text-sm text-gray-500 dark:text-gray-400">
+                        <p class="text-sm text-gray-500">
                             Remaining:
-                            <span class="font-semibold text-gray-900 dark:text-white">
+                            <span class="font-semibold text-gray-900">
                                 AED {{ number_format($category['remaining'], 2) }}
                             </span>
                         </p>
                     </div>
                 @empty
-                    <div class="col-span-full bg-white dark:bg-gray-900 rounded-2xl p-10 shadow text-center">
+                    <div class="col-span-full bg-white rounded-2xl p-10 shadow text-center">
                         <p class="text-gray-500 mb-4">
                             No budget set for any category.
                         </p>
@@ -111,8 +111,8 @@
             </div>
 
             <!-- ================= CHART ================= -->
-            <div class="mt-20 bg-white dark:bg-gray-900 rounded-2xl p-8 shadow-lg">
-                <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-6">
+            <div class="mt-20 bg-white rounded-2xl p-8 shadow-lg">
+                <h2 class="text-xl font-bold text-gray-900 mb-6">
                     Category-wise Expenses
                 </h2>
 

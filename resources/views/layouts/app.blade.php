@@ -1,10 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" x-data="{ dark: localStorage.getItem('theme') === 'dark' || (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches) }" x-init="$watch('dark', value => {
-    localStorage.setItem('theme', value ? 'dark' : 'light');
-    document.documentElement.classList.toggle('dark', value);
-});
-document.documentElement.classList.toggle('dark', dark);"
-    :class="{ 'dark': dark }">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
 <head>
     <meta charset="utf-8">
@@ -20,16 +15,15 @@ document.documentElement.classList.toggle('dark', dark);"
     <!-- ApexCharts -->
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 
-    <!-- Alpine.js (Required for Dark Mode) -->
-    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <!-- Alpine.js -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
     <!-- Tailwind / Vite -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
 
-<body
-    class="font-sans antialiased bg-gray-50 text-gray-900 min-h-screen">
+<body class="font-sans antialiased bg-gray-50 text-gray-900 min-h-screen">
 
     <div class="min-h-screen flex flex-col">
 
@@ -38,7 +32,7 @@ document.documentElement.classList.toggle('dark', dark);"
 
         <!-- Optional Page Header -->
         @isset($header)
-            <header class="bg-white dark:bg-gray-900 shadow border-b border-gray-200 dark:border-gray-800">
+            <header class="bg-white shadow border-b border-gray-200">
                 <div class="max-w-7xl mx-auto py-6 px-6">
                     {{ $header }}
                 </div>
