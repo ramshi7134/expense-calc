@@ -20,7 +20,7 @@
             border: none;
             border-radius: 15px;
             box-shadow: 0 10px 30px 0 rgba(0, 0, 0, 0.1);
-            max-width: 500px;
+            max-width: 400px;
         }
 
         .auth-card .card-header {
@@ -41,8 +41,8 @@
         <main class="py-4">
             <div class="container">
                 <div class="row justify-content-center">
-                    {{-- Adjusted column classes for better responsiveness --}}
-                    <div class="col-lg-5 col-md-8 col-sm-10 col-12">
+                    {{-- Adjusted column classes for a narrower card --}}
+                    <div class="col-lg-12 col-md-6 col-sm-8 col-11">
                         <div class="card auth-card">
                             <div class="card-header">
                                 {{ $header ?? config('app.name', 'Laravel') }}

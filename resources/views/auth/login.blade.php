@@ -43,19 +43,23 @@
             <label for="remember_me" class="form-check-label">{{ __('Remember me') }}</label>
         </div>
 
-        <div class="d-flex justify-content-between align-items-center">
-            @if (Route::has('password.request'))
-                <a class="btn btn-link" href="{{ route('password.request') }}">
-                    {{ __('Forgot your password?') }}
-                </a>
-            @endif
-
-            <button type="submit" class="btn btn-primary">
-                {{ __('Log in') }}
-            </button>
+        <div class="row align-items-center mt-4">
+            <div class="col">
+                @if (Route::has('password.request'))
+                    <a class="btn btn-link px-0" href="{{ route('password.request') }}">
+                        {{ __('Forgot your password?') }}
+                    </a>
+                @endif
+            </div>
+            <div class="col text-end">
+                <button type="submit" class="btn btn-primary">
+                    {{ __('Log in') }}
+                </button>
+            </div>
         </div>
+
         <div class="text-center mt-3">
-            <p>Don't have an account? <a href="{{ route('register') }}">Register</a></p>
+            <p class="mb-0">Don't have an account? <a href="{{ route('register') }}">Register</a></p>
         </div>
     </form>
 </x-guest-layout>
