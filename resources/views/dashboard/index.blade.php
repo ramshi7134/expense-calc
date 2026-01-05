@@ -219,7 +219,7 @@
 
                 // Bar Chart for Budget vs. Spent
                 if (document.querySelector("#budgetVsSpentChart")) {
-                    const budgetData = @json(collect($categorySummary)->where('limit', '>', 0)->all());
+                    const budgetData = @json(collect($categorySummary)->where('limit', '>', 0)->values()->all());
 
                     var budgetVsSpentOptions = {
                         series: [{
