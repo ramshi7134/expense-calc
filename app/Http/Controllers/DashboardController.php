@@ -8,6 +8,7 @@ use App\Models\Category;
 use App\Models\Budget;
 use App\Models\Expense;
 use App\Models\EmiPlan;
+use Carbon\Carbon;
 
 class DashboardController extends Controller
 {
@@ -74,9 +75,19 @@ class DashboardController extends Controller
             return $plan->installments->where('status', 'pending')->sum('amount');
         });
 
-        // New: Calculate this month's EMI due
+        // Calculate this month's EMI due
         $currentMonthEmiDue = \App\Models\EmiInstallment::where('month', $month)
             ->where('year', $year)
+            ->where('status', '!=', 'paid')
+            ->whereHas('emiPlan', function ($query) use ($user) {
+                $query->where('user_id', $user->id);
+            })
+            ->sum('amount');
+
+        // New: Calculate next month's EMI due
+        $nextMonthDate = Carbon::create($year, $month, 1)->addMonth();
+        $nextMonthEmiDue = \App\Models\EmiInstallment::where('month', $nextMonthDate->month)
+            ->where('year', $nextMonthDate->year)
             ->where('status', '!=', 'paid')
             ->whereHas('emiPlan', function ($query) use ($user) {
                 $query->where('user_id', $user->id);
@@ -91,7 +102,8 @@ class DashboardController extends Controller
             'month',
             'year',
             'totalEmiOutstanding',
-            'currentMonthEmiDue'
+            'currentMonthEmiDue',
+            'nextMonthEmiDue'
         ));
     }
 }
