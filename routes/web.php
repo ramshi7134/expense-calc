@@ -7,6 +7,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\BudgetController;
 use App\Http\Controllers\ExpenseController;
 use App\Http\Controllers\ReportController;
+use App\Http\Controllers\EmiController;
 
 // Profile routes for edit, update, and delete
 Route::middleware(['auth'])->group(function () {
@@ -33,3 +34,7 @@ Route::resource('expenses', ExpenseController::class)->middleware(['auth']);
 // Reports
 Route::get('/reports', [ReportController::class, 'index'])->middleware(['auth'])->name('reports.index');
 Route::post('/reports/filter', [ReportController::class, 'filter'])->middleware(['auth'])->name('reports.filter');
+
+// EMI Plans
+Route::resource('emis', EmiController::class)->middleware(['auth']);
+Route::post('/emis/{installment}/pay', [EmiController::class, 'pay'])->middleware(['auth'])->name('emis.pay');

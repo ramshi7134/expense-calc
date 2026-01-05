@@ -31,6 +31,10 @@
                     <a class="nav-link {{ request()->routeIs('reports.*') ? 'active' : '' }}"
                         href="{{ route('reports.index') }}">{{ __('Reports') }}</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->routeIs('emis.*') ? 'active' : '' }}"
+                        href="{{ route('emis.index') }}">{{ __('EMIs') }}</a>
+                </li>
             </ul>
 
             <!-- Right Side Of Navbar -->

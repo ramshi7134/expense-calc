@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Category;
 use App\Models\Budget;
 use App\Models\Expense;
+use App\Models\EmiPlan;
 
 class DashboardController extends Controller
 {
@@ -61,13 +62,36 @@ class DashboardController extends Controller
             return $item['limit'] > 0;
         });
 
-        return view('dashboard.index', [
-            'totalExpenses' => round($totalExpenses, 2),
-            'totalBudget' => round($totalBudget, 2),
-            'remainingBudget' => round($remainingBudget, 2),
-            'categorySummary' => $categorySummary,
-            'month' => $month,
-            'year' => $year,
-        ]);
+        // EMI Summary
+        $activeEmiPlans = EmiPlan::where('user_id', $user->id)
+            ->whereHas('installments', function ($query) {
+                $query->where('status', 'pending');
+            })
+            ->with('installments')
+            ->get();
+
+        $totalEmiOutstanding = $activeEmiPlans->sum(function ($plan) {
+            return $plan->installments->where('status', 'pending')->sum('amount');
+        });
+
+        // New: Calculate this month's EMI due
+        $currentMonthEmiDue = \App\Models\EmiInstallment::where('month', $month)
+            ->where('year', $year)
+            ->where('status', '!=', 'paid')
+            ->whereHas('emiPlan', function ($query) use ($user) {
+                $query->where('user_id', $user->id);
+            })
+            ->sum('amount');
+
+        return view('dashboard.index', compact(
+            'totalExpenses',
+            'totalBudget',
+            'remainingBudget',
+            'categorySummary',
+            'month',
+            'year',
+            'totalEmiOutstanding',
+            'currentMonthEmiDue'
+        ));
     }
 }

@@ -54,4 +54,12 @@ class User extends Authenticatable
     {
         return $this->hasMany(Budget::class);
     }
+
+    /**
+     * Get the EMI plans for the user.
+     */
+    public function emiPlans(): HasMany
+    {
+        return $this->hasMany(EmiPlan::class);
+    }
 }
