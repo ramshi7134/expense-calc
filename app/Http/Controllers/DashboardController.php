@@ -59,9 +59,9 @@ class DashboardController extends Controller
                 'remaining' => round($limit - $spent, 2),
             ];
         })->filter(function($item) {
-            // Filter out categories with no budget set
-            return $item['limit'] > 0;
-        });
+            // Filter out categories with no budget or expenses
+            return $item['limit'] > 0 || $item['spent'] > 0;
+        })->values();
 
         // EMI Summary
         $activeEmiPlans = EmiPlan::where('user_id', $user->id)
