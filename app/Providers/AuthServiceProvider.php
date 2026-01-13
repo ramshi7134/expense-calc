@@ -4,6 +4,8 @@ namespace App\Providers;
 
 use App\Models\Budget;
 use App\Policies\BudgetPolicy;
+use App\Models\Receipt;
+use App\Policies\ReceiptPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
 class AuthServiceProvider extends ServiceProvider
@@ -15,6 +17,7 @@ class AuthServiceProvider extends ServiceProvider
      */
     protected $policies = [
         Budget::class => BudgetPolicy::class,
+    Receipt::class => ReceiptPolicy::class,
     ];
 
     /**

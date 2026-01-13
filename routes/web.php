@@ -38,3 +38,10 @@ Route::post('/reports/filter', [ReportController::class, 'filter'])->middleware(
 // EMI Plans
 Route::resource('emis', EmiController::class)->middleware(['auth']);
 Route::post('/emis/{installment}/pay', [EmiController::class, 'pay'])->middleware(['auth'])->name('emis.pay');
+
+// Scan receipts (upload & OCR)
+use App\Http\Controllers\ScanController;
+Route::get('scan/create', [ScanController::class, 'create'])->name('scan.create')->middleware('auth');
+Route::post('scan', [ScanController::class, 'store'])->name('scan.store')->middleware('auth');
+Route::get('scan/{receipt}', [ScanController::class, 'review'])->name('scan.review')->middleware('auth');
+Route::post('scan/{receipt}/confirm', [ScanController::class, 'confirm'])->name('scan.confirm')->middleware('auth');
