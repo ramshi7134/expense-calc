@@ -16,8 +16,9 @@
             </div>
             <div class="col-md-6">
                 <div class="card p-3">
-                    @if($receipt->status === 'processing')
-                        <div class="alert alert-info">OCR is processing. Please wait or refresh this page in a few seconds.</div>
+                    @if ($receipt->status === 'processing')
+                        <div class="alert alert-info">OCR is processing. Please wait or refresh this page in a few seconds.
+                        </div>
                     @elseif($receipt->status === 'failed')
                         <div class="alert alert-warning">OCR failed. You can still enter data manually below.</div>
                     @endif
@@ -26,18 +27,21 @@
                         @csrf
                         <div class="mb-3">
                             <label class="form-label">Amount</label>
-                            <input name="amount" type="number" step="0.01" class="form-control" value="{{ old('amount', $receipt->extracted_amount) }}" required>
+                            <input name="amount" type="number" step="0.01" class="form-control"
+                                value="{{ old('amount', $receipt->extracted_amount) }}" required>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Date</label>
-                            <input name="date" type="date" class="form-control" value="{{ old('date', optional($receipt->extracted_date)->format('Y-m-d')) }}">
+                            <input name="date" type="date" class="form-control"
+                                value="{{ old('date', optional($receipt->extracted_date)->format('Y-m-d')) }}">
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Category</label>
                             <select name="category" class="form-select">
                                 <option value="">-- Select --</option>
-                                @foreach($categories as $c)
-                                    <option {{ old('category', $receipt->extracted_category) == $c ? 'selected' : '' }}>{{ $c }}</option>
+                                @foreach ($categories as $c)
+                                    <option {{ old('category', $receipt->extracted_category) == $c ? 'selected' : '' }}>
+                                        {{ $c }}</option>
                                 @endforeach
                             </select>
                         </div>
