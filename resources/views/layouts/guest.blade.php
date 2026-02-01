@@ -11,49 +11,22 @@
     <!-- Scripts -->
     @vite(['resources/scss/app.scss', 'resources/js/app.js'])
 
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+        integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+
     <style>
         body {
-            background-color: #f4f7f6;
-        }
-
-        .auth-card {
-            border: none;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px 0 rgba(0, 0, 0, 0.1);
-            max-width: 400px;
-        }
-
-        .auth-card .card-header {
-            border-top-left-radius: 15px;
-            border-top-right-radius: 15px;
-            background-color: var(--bs-primary);
-            color: white;
-            padding: 1.5rem;
-            text-align: center;
-            font-size: 1.5rem;
-            font-weight: bold;
+            background-color: #f0f2f5;
         }
     </style>
 </head>
 
-<body class="d-flex align-items-center justify-content-center min-vh-100">
+<body class="antialiased">
     <div id="app">
         <main class="py-4">
-            <div class="container">
-                <div class="row justify-content-center">
-                    {{-- Adjusted column classes for a narrower card --}}
-                    <div class="col-lg-12 col-md-6 col-sm-8 col-11">
-                        <div class="card auth-card">
-                            <div class="card-header">
-                                {{ $header ?? config('app.name', 'Laravel') }}
-                            </div>
-                            <div class="card-body p-4">
-                                {{ $slot }}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            {{ $slot }}
         </main>
     </div>
 </body>

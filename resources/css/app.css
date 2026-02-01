@@ -1,3 +1,15 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.btn-google {
+    color: #fff;
+    background-color: #ea4335;
+    border-color: #ea4335;
+}
+
+.btn-google:hover {
+    color: #fff;
+    background-color: #d73925;
+    border-color: #c23321;
+}
