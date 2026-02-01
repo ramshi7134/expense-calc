@@ -9,6 +9,7 @@ use App\Http\Controllers\ExpenseController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\EmiController;
 use App\Http\Controllers\Auth\GoogleController;
+use App\Http\Controllers\PaymentTypeController;
 
 // Profile routes for edit, update, and delete
 Route::middleware(['auth'])->group(function () {
@@ -43,6 +44,9 @@ Route::post('/emis/{installment}/pay', [EmiController::class, 'pay'])->middlewar
 // Google SSO
 Route::get('/auth/google/redirect', [GoogleController::class, 'redirectToGoogle'])->name('google.redirect');
 Route::get('/auth/google/callback', [GoogleController::class, 'handleGoogleCallback'])->name('google.callback');
+
+// Payment Types
+Route::resource('payment-types', PaymentTypeController::class)->middleware('auth');
 
 // Scan receipts (upload & OCR)
 use App\Http\Controllers\ScanController;

@@ -23,6 +23,7 @@ class User extends Authenticatable
         'email',
         'password',
         'google_id',
+        'currency',
     ];
 
     /**
@@ -62,5 +63,13 @@ class User extends Authenticatable
     public function emiPlans(): HasMany
     {
         return $this->hasMany(EmiPlan::class);
+    }
+
+    /**
+     * Get the payment types for the user.
+     */
+    public function paymentTypes(): HasMany
+    {
+        return $this->hasMany(PaymentType::class);
     }
 }

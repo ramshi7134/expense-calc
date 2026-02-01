@@ -6,7 +6,8 @@
                     <div class="card-body p-5">
                         <div class="text-center mb-4">
                             <h1 class="h2 fw-bold">{{ __('Forgot Your Password?') }}</h1>
-                            <p class="text-muted">No problem. Just let us know your email address and we will email you a password reset link.</p>
+                            <p class="text-muted">No problem. Just let us know your email address and we will email you a
+                                password reset link.</p>
                         </div>
 
                         <!-- Session Status -->

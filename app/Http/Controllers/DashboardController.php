@@ -94,6 +94,33 @@ class DashboardController extends Controller
             })
             ->sum('amount');
 
+        // Calculate credit card statement amounts for the current month
+        $creditCardStatements = [];
+        $paymentTypesWithStatement = $user->paymentTypes()->whereNotNull('statement_day')->get();
+
+        foreach ($paymentTypesWithStatement as $paymentType) {
+            $statementDay = $paymentType->statement_day;
+            $currentDate = Carbon::createFromDate($year, $month, $statementDay);
+
+            $startDate = $currentDate->copy()->subMonth()->addDay();
+            $endDate = $currentDate;
+
+            $total = Expense::where('user_id', $user->id)
+                ->where('payment_type', $paymentType->name)
+                ->whereBetween('date', [$startDate, $endDate])
+                ->sum('amount');
+
+            if ($total > 0) {
+                $creditCardStatements[] = [
+                    'name' => $paymentType->name,
+                    'statement_day' => $statementDay,
+                    'total' => $total,
+                    'start_date' => $startDate->format('d M, Y'),
+                    'end_date' => $endDate->format('d M, Y'),
+                ];
+            }
+        }
+
         return view('dashboard.index', compact(
             'totalExpenses',
             'totalBudget',
@@ -103,7 +130,8 @@ class DashboardController extends Controller
             'year',
             'totalEmiOutstanding',
             'currentMonthEmiDue',
-            'nextMonthEmiDue'
+            'nextMonthEmiDue',
+            'creditCardStatements'
         ));
     }
 }

@@ -34,7 +34,7 @@
                                 <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
                                     Total Expenses</div>
                                 <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                    AED {{ number_format($totalExpenses, 2) }}</div>
+                                    {{ format_currency($totalExpenses) }}</div>
                             </div>
                             <div class="col-auto">
                                 <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
@@ -52,7 +52,7 @@
                                     Remaining Budget</div>
                                 <div
                                     class="h5 mb-0 font-weight-bold {{ $remainingBudget >= 0 ? 'text-success' : 'text-danger' }}">
-                                    AED {{ number_format($remainingBudget, 2) }}</div>
+                                    {{ format_currency($remainingBudget) }}</div>
                             </div>
                             <div class="col-auto">
                                 <i class="fas fa-wallet fa-2x text-gray-300"></i>
@@ -69,7 +69,7 @@
                                 <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
                                     Total EMI Outstanding</div>
                                 <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                    AED {{ number_format($totalEmiOutstanding, 2) }}</div>
+                                    {{ format_currency($totalEmiOutstanding) }}</div>
                             </div>
                             <div class="col-auto">
                                 <i class="fas fa-credit-card fa-2x text-gray-300"></i>
@@ -90,7 +90,7 @@
                                 <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
                                     This Month's EMI Due</div>
                                 <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                    AED {{ number_format($currentMonthEmiDue, 2) }}</div>
+                                    {{ format_currency($currentMonthEmiDue) }}</div>
                             </div>
                             <div class="col-auto">
                                 <i class="fas fa-calendar-day fa-2x text-gray-300"></i>
@@ -107,7 +107,7 @@
                                 <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
                                     Next Month's EMI Due</div>
                                 <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                    AED {{ number_format($nextMonthEmiDue, 2) }}</div>
+                                    {{ format_currency($nextMonthEmiDue) }}</div>
                             </div>
                             <div class="col-auto">
                                 <i class="fas fa-calendar-alt fa-2x text-gray-300"></i>
@@ -129,8 +129,8 @@
                             <div class="card-body">
                                 <h5 class="card-title">{{ $category['name'] }}</h5>
                                 <p class="card-text">
-                                    Spent: AED {{ number_format($category['spent'], 2) }} /
-                                    <span class="text-muted">AED {{ number_format($category['limit'], 2) }}</span>
+                                    Spent: {{ format_currency($category['spent']) }} /
+                                    <span class="text-muted">{{ format_currency($category['limit']) }}</span>
                                 </p>
                                 <div class="progress mb-2">
                                     <div class="progress-bar" role="progressbar"
@@ -141,7 +141,7 @@
                                     </div>
                                 </div>
                                 <p class="card-text text-muted">
-                                    Remaining: AED {{ number_format($category['remaining'], 2) }}
+                                    Remaining: {{ format_currency($category['remaining']) }}
                                 </p>
                             </div>
                         </div>
@@ -187,6 +187,36 @@
                 @endif
             </div>
         </div>
+
+        <!-- Credit Card Statements -->
+        @if (!empty($creditCardStatements))
+            <div class="row">
+                <div class="col-12">
+                    <h2 class="h4 mb-3 text-gray-800">Credit Card Statements Due This Month</h2>
+                    <div class="row">
+                        @foreach ($creditCardStatements as $statement)
+                            <div class="col-md-6 col-lg-4 mb-4">
+                                <div class="card shadow-sm h-100">
+                                    <div class="card-body">
+                                        <h5 class="card-title fw-bold">{{ $statement['name'] }}</h5>
+                                        <h6 class="card-subtitle mb-2 text-muted">
+                                            Statement for {{ $statement['start_date'] }} - {{ $statement['end_date'] }}
+                                        </h6>
+                                        <p class="card-text fs-4 fw-bold text-primary">
+                                            {{ format_currency($statement['total']) }}
+                                        </p>
+                                    </div>
+                                    <div class="card-footer text-muted">
+                                        Statement Date: Every month on day {{ $statement['statement_day'] }}
+                                    </div>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+            </div>
+        @endif
+
     </div>
 
     @push('scripts')
@@ -253,7 +283,7 @@
                         },
                         yaxis: {
                             title: {
-                                text: 'AED'
+                                text: '{{ auth()->user()->currency }}'
                             }
                         },
                         fill: {
@@ -262,7 +292,7 @@
                         tooltip: {
                             y: {
                                 formatter: function(val) {
-                                    return "AED " + val
+                                    return "{{ auth()->user()->currency }} " + val
                                 }
                             }
                         },

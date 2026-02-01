@@ -12,7 +12,7 @@ class ExpenseController extends Controller
     public function index()
     {
         $user = auth()->user();
-        $expenses = \App\Models\Expense::with('category')
+        $expenses = \App\Models\Expense::with(['category', 'paymentType'])
             ->where('user_id', $user->id)
             ->orderByDesc('date')
             ->get();
@@ -28,7 +28,8 @@ class ExpenseController extends Controller
         $categories = \App\Models\Category::where(function($q) use ($user) {
             $q->whereNull('user_id')->orWhere('user_id', $user->id);
         })->get();
-        return view('expenses.create', compact('categories'));
+        $paymentTypes = $user->paymentTypes;
+        return view('expenses.create', compact('categories', 'paymentTypes'));
     }
 
     /**
@@ -39,6 +40,7 @@ class ExpenseController extends Controller
         $user = auth()->user();
         $validated = $request->validate([
             'amount' => 'required|numeric|min:0.01',
+            'payment_type_id' => 'nullable|exists:payment_types,id',
             'category_id' => 'required|exists:categories,id',
             'date' => 'required|date',
             'note' => 'nullable|string|max:255',
@@ -66,7 +68,8 @@ class ExpenseController extends Controller
         $categories = \App\Models\Category::where(function($q) use ($user) {
             $q->whereNull('user_id')->orWhere('user_id', $user->id);
         })->get();
-        return view('expenses.edit', compact('expense', 'categories'));
+        $paymentTypes = $user->paymentTypes;
+        return view('expenses.edit', compact('expense', 'categories', 'paymentTypes'));
     }
 
     /**
@@ -78,6 +81,7 @@ class ExpenseController extends Controller
         $expense = \App\Models\Expense::where('user_id', $user->id)->findOrFail($id);
         $validated = $request->validate([
             'amount' => 'required|numeric|min:0.01',
+            'payment_type_id' => 'nullable|exists:payment_types,id',
             'category_id' => 'required|exists:categories,id',
             'date' => 'required|date',
             'note' => 'nullable|string|max:255',
