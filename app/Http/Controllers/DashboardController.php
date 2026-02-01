@@ -126,7 +126,7 @@ class DashboardController extends Controller
                     'statement_day' => $statementDay,
                     'total' => $total,
                     'start_date' => $statementStartDate->format('d M, Y'),
-                    'end_date' => $statementEndDate->format('d M, Y'),
+                    'end_date' => $statementEndDate->copy()->subDay()->format('d M, Y'),
                 ];
             }
         }
