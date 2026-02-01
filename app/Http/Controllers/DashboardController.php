@@ -96,18 +96,28 @@ class DashboardController extends Controller
 
         // Calculate credit card statement amounts for the current month
         $creditCardStatements = [];
-        $paymentTypesWithStatement = $user->paymentTypes()->whereNotNull('statement_day')->get();
+        $paymentTypesWithStatement = $user->paymentTypes()->where('type', 'credit')->whereNotNull('statement_day')->get();
 
         foreach ($paymentTypesWithStatement as $paymentType) {
             $statementDay = $paymentType->statement_day;
-            $currentDate = Carbon::createFromDate($year, $month, $statementDay);
+            $currentDate = Carbon::createFromDate($year, $month, 1); // Start of the selected month
 
-            $startDate = $currentDate->copy()->subMonth()->addDay();
-            $endDate = $currentDate;
+            // Determine the statement end date for the selected month
+            $statementEndDate = Carbon::createFromDate($year, $month, $statementDay);
+
+            // Determine the statement start date
+            $statementStartDate = $statementEndDate->copy()->subMonth();
+
+            // Check if today is on or after the statement day for the selected month
+            if (Carbon::today()->month == $month && Carbon::today()->year == $year && Carbon::today()->day < $statementDay) {
+                // If statement day for this month hasn't passed, show last month's statement
+                $statementEndDate->subMonth();
+                $statementStartDate->subMonth();
+            }
 
             $total = Expense::where('user_id', $user->id)
-                ->where('payment_type', $paymentType->name)
-                ->whereBetween('date', [$startDate, $endDate])
+                ->where('payment_type_id', $paymentType->id)
+                ->whereBetween('date', [$statementStartDate, $statementEndDate])
                 ->sum('amount');
 
             if ($total > 0) {
@@ -115,8 +125,8 @@ class DashboardController extends Controller
                     'name' => $paymentType->name,
                     'statement_day' => $statementDay,
                     'total' => $total,
-                    'start_date' => $startDate->format('d M, Y'),
-                    'end_date' => $endDate->format('d M, Y'),
+                    'start_date' => $statementStartDate->format('d M, Y'),
+                    'end_date' => $statementEndDate->format('d M, Y'),
                 ];
             }
         }
