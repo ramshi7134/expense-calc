@@ -108,16 +108,13 @@ class DashboardController extends Controller
             // Determine the statement start date
             $statementStartDate = $statementEndDate->copy()->subMonth();
 
-            // Check if today is on or after the statement day for the selected month
-            if (Carbon::today()->month == $month && Carbon::today()->year == $year && Carbon::today()->day < $statementDay) {
-                // If statement day for this month hasn't passed, show last month's statement
-                $statementEndDate->subMonth();
-                $statementStartDate->subMonth();
-            }
+            // Always use the current month's statement cycle
+            // Data period: from start_date (statementEndDate - 1 month) to the day before statement day
+            $statementDisplayEndDate = $statementEndDate->copy()->subDay();
 
             $total = Expense::where('user_id', $user->id)
                 ->where('payment_type_id', $paymentType->id)
-                ->whereBetween('date', [$statementStartDate, $statementEndDate])
+                ->whereBetween('date', [$statementStartDate, $statementDisplayEndDate])
                 ->sum('amount');
 
             if ($total > 0) {
@@ -126,7 +123,7 @@ class DashboardController extends Controller
                     'statement_day' => $statementDay,
                     'total' => $total,
                     'start_date' => $statementStartDate->format('d M, Y'),
-                    'end_date' => $statementEndDate->copy()->subDay()->format('d M, Y'),
+                    'end_date' => $statementDisplayEndDate->format('d M, Y'),
                 ];
             }
         }
