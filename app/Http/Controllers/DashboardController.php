@@ -105,11 +105,11 @@ class DashboardController extends Controller
             // Determine the statement end date for the selected month
             $statementEndDate = Carbon::createFromDate($year, $month, $statementDay);
 
-            // Determine the statement start date
-            $statementStartDate = $statementEndDate->copy()->subMonth();
+            // Determine the statement start date: start of the selected month
+            $statementStartDate = Carbon::createFromDate($year, $month, 1);
 
             // Always use the current month's statement cycle
-            // Data period: from start_date (statementEndDate - 1 month) to the day before statement day
+            // Data period: from the first day of the month to the day before the statement day
             $statementDisplayEndDate = $statementEndDate->copy()->subDay();
 
             $total = Expense::where('user_id', $user->id)
