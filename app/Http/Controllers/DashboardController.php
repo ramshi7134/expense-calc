@@ -124,9 +124,9 @@ class DashboardController extends Controller
             $overlapEnd = $statementDisplayEndDate->lessThan($selectedMonthEnd) ? $statementDisplayEndDate->copy() : $selectedMonthEnd->copy();
             $daysInSelectedMonth = $overlapStart->lte($overlapEnd) ? $overlapStart->diffInDays($overlapEnd) + 1 : 0;
             $totalCycleDays = $statementStartDate->diffInDays($statementDisplayEndDate) + 1;
-            $endsInSelectedMonth = ($statementDisplayEndDate->month === $month && $statementDisplayEndDate->year === $year);
-            if (!$endsInSelectedMonth && $daysInSelectedMonth < ceil($totalCycleDays / 2)) {
-                // Skip showing this statement if it doesn't end in selected month and its majority isn't in selected month
+            // Require at least 60% of the cycle days to fall in the selected month
+            if ($daysInSelectedMonth < ceil($totalCycleDays * 0.6)) {
+                // Skip showing this statement if the majority isn't in the selected month
                 continue;
             }
 
