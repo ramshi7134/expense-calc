@@ -105,8 +105,8 @@ class DashboardController extends Controller
             // Determine the statement end date for the selected month
             $statementEndDate = Carbon::createFromDate($year, $month, $statementDay);
 
-            // Determine the cycle: from the day after previous statement day to the day before current statement day
-            $statementStartDate = $statementEndDate->copy()->subMonth()->addDay();
+            // Determine the cycle: from the previous statement day to the day before current statement day
+            $statementStartDate = $statementEndDate->copy()->subMonth();
 
             // Always use the current month's statement cycle
             // Data period: day after previous statement day to day before current statement day
