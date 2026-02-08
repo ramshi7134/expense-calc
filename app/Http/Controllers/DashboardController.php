@@ -105,12 +105,24 @@ class DashboardController extends Controller
             // Determine the statement end date for the selected month
             $statementEndDate = Carbon::createFromDate($year, $month, $statementDay);
 
-            // Determine the statement start date: start of the selected month
-            $statementStartDate = Carbon::createFromDate($year, $month, 1);
+            // Determine the cycle: from the day after previous statement day to the day before current statement day
+            $statementStartDate = $statementEndDate->copy()->subMonth()->addDay();
 
             // Always use the current month's statement cycle
-            // Data period: from the first day of the month to the day before the statement day
+            // Data period: day after previous statement day to day before current statement day
             $statementDisplayEndDate = $statementEndDate->copy()->subDay();
+
+            // Determine if the majority of the cycle falls in the selected month
+            $selectedMonthStart = Carbon::createFromDate($year, $month, 1);
+            $selectedMonthEnd = $selectedMonthStart->copy()->endOfMonth();
+            $overlapStart = $statementStartDate->greaterThan($selectedMonthStart) ? $statementStartDate->copy() : $selectedMonthStart->copy();
+            $overlapEnd = $statementDisplayEndDate->lessThan($selectedMonthEnd) ? $statementDisplayEndDate->copy() : $selectedMonthEnd->copy();
+            $daysInSelectedMonth = $overlapStart->lte($overlapEnd) ? $overlapStart->diffInDays($overlapEnd) + 1 : 0;
+            $totalCycleDays = $statementStartDate->diffInDays($statementDisplayEndDate) + 1;
+            if ($daysInSelectedMonth < ceil($totalCycleDays / 2)) {
+                // Skip showing this statement if its majority is not in the selected month
+                continue;
+            }
 
             $total = Expense::where('user_id', $user->id)
                 ->where('payment_type_id', $paymentType->id)
