@@ -102,18 +102,23 @@ class DashboardController extends Controller
             $statementDay = $paymentType->statement_day;
             $currentDate = Carbon::createFromDate($year, $month, 1); // Start of the selected month
 
-            // Determine the statement end date for the selected month
-            $statementEndDate = Carbon::createFromDate($year, $month, $statementDay);
+            // Determine the statement end date for the selected month, clamped to month's last day if needed
+            $selectedMonthStart = Carbon::createFromDate($year, $month, 1);
+            $daysInSelectedMonth = $selectedMonthStart->daysInMonth;
+            $clampedEndDay = min($statementDay, $daysInSelectedMonth);
+            $statementEndDate = Carbon::createFromDate($year, $month, $clampedEndDay);
 
-            // Determine the cycle: from the previous statement day to the day before current statement day
-            $statementStartDate = $statementEndDate->copy()->subMonth();
+            // Determine the cycle: from the previous month's clamped statement day to the day before current statement day
+            $prevMonthDate = $selectedMonthStart->copy()->subMonth();
+            $daysInPrevMonth = $prevMonthDate->daysInMonth;
+            $clampedPrevDay = min($statementDay, $daysInPrevMonth);
+            $statementStartDate = Carbon::createFromDate($prevMonthDate->year, $prevMonthDate->month, $clampedPrevDay);
 
             // Always use the current month's statement cycle
             // Data period: day after previous statement day to day before current statement day
             $statementDisplayEndDate = $statementEndDate->copy()->subDay();
 
             // Determine if the majority of the cycle falls in the selected month
-            $selectedMonthStart = Carbon::createFromDate($year, $month, 1);
             $selectedMonthEnd = $selectedMonthStart->copy()->endOfMonth();
             $overlapStart = $statementStartDate->greaterThan($selectedMonthStart) ? $statementStartDate->copy() : $selectedMonthStart->copy();
             $overlapEnd = $statementDisplayEndDate->lessThan($selectedMonthEnd) ? $statementDisplayEndDate->copy() : $selectedMonthEnd->copy();
