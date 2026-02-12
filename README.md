@@ -9,7 +9,7 @@
 
 # Expense Monitor
 
-Expense Monitor is a modern, intuitive web application designed to help you effortlessly track your monthly expenses, manage budgets,creit card statements and gain insights into your spending habits through a clean and visual dashboard.
+Expense Monitor is a modern, intuitive web application designed to help you effortlessly track your monthly expenses, manage budgets,creit card statements,balance mangement and gain insights into your spending habits through a clean and visual dashboard.
 
 ![Expense Monitor Dashboard](https://i.imgur.com/your-screenshot-url.png) <!-- You can replace this URL with a direct link to your screenshot -->
 
